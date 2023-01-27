@@ -1,0 +1,4 @@
+Time resolution is 1 ps
+Failure: FIN DE SIMULATION
+Time: 1000004 us  Iteration: 0  Process: /test_pulse_gen/P_TEST  File: /home/ptm3368a/M1S2/SyntMat/TP1/test_pulse_gen.vhd
+$finish called at time : 1000004 us : File "/home/ptm3368a/M1S2/SyntMat/TP1/test_pulse_gen.vhd" Line 85
