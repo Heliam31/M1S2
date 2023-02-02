@@ -1,0 +1,7 @@
+# compile vhdl design source files
+vhdl xil_defaultlib  \
+"../../../../../cpu_package.0.vhd" \
+"../../../../../log2_hw.vhd" \
+
+# Do not sort compile order
+nosort
