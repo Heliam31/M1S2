@@ -1,3 +1,0 @@
-INFO: [VRFC 10-163] Analyzing VHDL file "/home/ptm3368a/M1S2/SyntMat/cpu_package.0.vhd" into library xil_defaultlib
-INFO: [VRFC 10-163] Analyzing VHDL file "/home/ptm3368a/M1S2/SyntMat/log2_hw.vhd" into library xil_defaultlib
-INFO: [VRFC 10-3107] analyzing entity 'log2_hw'

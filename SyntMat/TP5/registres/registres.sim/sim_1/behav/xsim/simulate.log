@@ -1,0 +1,31 @@
+Time resolution is 1 ps
+Warning: Register 5 BAD VALUE
+Time: 77500 ps  Iteration: 0  Process: /test_registres/P_TEST  File: /home/ptm3368a/M1S2/SyntMat/TP5/test_registres.0.vhd
+Failure: FIN DE SIMULATION
+Time: 92500 ps  Iteration: 0  Process: /test_registres/P_TEST  File: /home/ptm3368a/M1S2/SyntMat/TP5/test_registres.0.vhd
+$finish called at time : 92500 ps : File "/home/ptm3368a/M1S2/SyntMat/TP5/test_registres.0.vhd" Line 169
+Warning: Register 5 BAD VALUE
+Time: 77500 ps  Iteration: 0  Process: /test_registres/P_TEST  File: /home/ptm3368a/M1S2/SyntMat/TP5/test_registres.0.vhd
+Failure: FIN DE SIMULATION
+Time: 92500 ps  Iteration: 0  Process: /test_registres/P_TEST  File: /home/ptm3368a/M1S2/SyntMat/TP5/test_registres.0.vhd
+$finish called at time : 92500 ps : File "/home/ptm3368a/M1S2/SyntMat/TP5/test_registres.0.vhd" Line 169
+Warning: Register 5 BAD VALUE
+Time: 77500 ps  Iteration: 0  Process: /test_registres/P_TEST  File: /home/ptm3368a/M1S2/SyntMat/TP5/test_registres.0.vhd
+Failure: FIN DE SIMULATION
+Time: 92500 ps  Iteration: 0  Process: /test_registres/P_TEST  File: /home/ptm3368a/M1S2/SyntMat/TP5/test_registres.0.vhd
+$finish called at time : 92500 ps : File "/home/ptm3368a/M1S2/SyntMat/TP5/test_registres.0.vhd" Line 169
+Warning: Register 5 BAD VALUE
+Time: 77500 ps  Iteration: 0  Process: /test_registres/P_TEST  File: /home/ptm3368a/M1S2/SyntMat/TP5/test_registres.0.vhd
+Failure: FIN DE SIMULATION
+Time: 92500 ps  Iteration: 0  Process: /test_registres/P_TEST  File: /home/ptm3368a/M1S2/SyntMat/TP5/test_registres.0.vhd
+$finish called at time : 92500 ps : File "/home/ptm3368a/M1S2/SyntMat/TP5/test_registres.0.vhd" Line 169
+Warning: Register 5 BAD VALUE
+Time: 77500 ps  Iteration: 0  Process: /test_registres/P_TEST  File: /home/ptm3368a/M1S2/SyntMat/TP5/test_registres.0.vhd
+Failure: FIN DE SIMULATION
+Time: 92500 ps  Iteration: 0  Process: /test_registres/P_TEST  File: /home/ptm3368a/M1S2/SyntMat/TP5/test_registres.0.vhd
+$finish called at time : 92500 ps : File "/home/ptm3368a/M1S2/SyntMat/TP5/test_registres.0.vhd" Line 169
+Warning: Register 5 BAD VALUE
+Time: 77500 ps  Iteration: 0  Process: /test_registres/P_TEST  File: /home/ptm3368a/M1S2/SyntMat/TP5/test_registres.0.vhd
+Failure: FIN DE SIMULATION
+Time: 92500 ps  Iteration: 0  Process: /test_registres/P_TEST  File: /home/ptm3368a/M1S2/SyntMat/TP5/test_registres.0.vhd
+$finish called at time : 92500 ps : File "/home/ptm3368a/M1S2/SyntMat/TP5/test_registres.0.vhd" Line 169
