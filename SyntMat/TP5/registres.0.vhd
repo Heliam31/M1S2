@@ -33,9 +33,9 @@ entity registres is
 		W : in std_logic;
 		RST, CLK : in std_logic;
 		-- bus d'adresse et donnees
-		ADR_A : in std_logic_vector(2 downto 0);
-		ADR_B : in std_logic_vector(2 downto 0);
-		ADR_W : in std_logic_vector(2 downto 0);
+		ADR_A : in std_logic_vector(ABUS_WIDTH-1 downto 0);
+		ADR_B : in std_logic_vector(ABUS_WIDTH-1 downto 0);
+		ADR_W : in std_logic_vector(ABUS_WIDTH-1 downto 0);
 		-- Ports de sortie
 		QA : out std_logic_vector(DBUS_WIDTH-1 downto 0);
 		QB : out std_logic_vector(DBUS_WIDTH-1 downto 0)

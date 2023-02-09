@@ -12,6 +12,6 @@ Compiling package std.textio
 Compiling package ieee.std_logic_1164
 Compiling package ieee.std_logic_arith
 Compiling package ieee.std_logic_unsigned
-Compiling architecture behavior of entity xil_defaultlib.registres [registres_default]
+Compiling architecture behavior of entity xil_defaultlib.registres [\registres(abus_width=3)\]
 Compiling architecture behavior of entity xil_defaultlib.test_registres
 Built simulation snapshot test_registres_behav
