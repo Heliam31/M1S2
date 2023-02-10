@@ -1,0 +1,13 @@
+#-----------------------------------------------------------
+# Vivado v2022.1 (64-bit)
+# SW Build 3526262 on Mon Apr 18 15:47:01 MDT 2022
+# IP Build 3524634 on Mon Apr 18 20:55:01 MDT 2022
+# Start of session at: Fri Feb 10 10:36:30 2023
+# Process ID: 7000
+# Current directory: /home/ptm3368a/M1S2/SyntMat/TP5Bis/TP5Bis.runs/synth_1
+# Command line: vivado -log registres.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source registres.tcl
+# Log file: /home/ptm3368a/M1S2/SyntMat/TP5Bis/TP5Bis.runs/synth_1/registres.vds
+# Journal file: /home/ptm3368a/M1S2/SyntMat/TP5Bis/TP5Bis.runs/synth_1/vivado.jou
+# Running On: pc-u3-305-08, OS: Linux, CPU Frequency: 800.155 MHz, CPU Physical cores: 8, Host memory: 16484 MB
+#-----------------------------------------------------------
+source registres.tcl -notrace

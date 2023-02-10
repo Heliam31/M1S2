@@ -1,0 +1,7 @@
+Time resolution is 1 ps
+Failure: FIN DE SIMULATION
+Time: 72500 ps  Iteration: 0  Process: /test_memory/P_TEST  File: /home/ptm3368a/M1S2/SyntMat/TP6/test_memory.3.vhd
+$finish called at time : 72500 ps : File "/home/ptm3368a/M1S2/SyntMat/TP6/test_memory.3.vhd" Line 146
+Failure: FIN DE SIMULATION
+Time: 72500 ps  Iteration: 0  Process: /test_memory/P_TEST  File: /home/ptm3368a/M1S2/SyntMat/TP6/test_memory.3.vhd
+$finish called at time : 72500 ps : File "/home/ptm3368a/M1S2/SyntMat/TP6/test_memory.3.vhd" Line 146
