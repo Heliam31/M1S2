@@ -1,4 +1,3 @@
-INFO: [VRFC 10-163] Analyzing VHDL file "/home/ptm3368a/M1S2/SyntMat/TP6/cpu_package.0.vhd" into library xil_defaultlib
 INFO: [VRFC 10-163] Analyzing VHDL file "/home/ptm3368a/M1S2/SyntMat/TP6/memory.3.vhd" into library xil_defaultlib
 INFO: [VRFC 10-3107] analyzing entity 'memory'
 INFO: [VRFC 10-163] Analyzing VHDL file "/home/ptm3368a/M1S2/SyntMat/TP6/test_memory.3.vhd" into library xil_defaultlib

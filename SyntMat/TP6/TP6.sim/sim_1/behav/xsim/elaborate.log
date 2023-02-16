@@ -14,6 +14,6 @@ Compiling package ieee.std_logic_arith
 Compiling package ieee.std_logic_unsigned
 Compiling package xil_defaultlib.cpu_package
 Compiling package ieee.std_logic_textio
-Compiling architecture behavior of entity xil_defaultlib.memory [\memory(mem_size=32,filename="/h...]
+Compiling architecture behavior of entity xil_defaultlib.memory [memory_default]
 Compiling architecture behavior of entity xil_defaultlib.test_memory
 Built simulation snapshot test_memory_behav

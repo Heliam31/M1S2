@@ -113,19 +113,18 @@ begin
 P_ACCESS: process(CLK)
 begin
    if rising_edge(CLK) then
-        DO <= (others => 'Z');
-        if RST = '0' then 
-            REGS <= (others => conv_std_logic_vector(0,DBUS_WIDTH));
-        else
-           if EN = '1' then
+        --if RST = '0' then 
+         --   REGS <= LOAD_FILE(STRING'(FILENAME));
+        --elsif EN = '1' then
+         if EN = '1' then
             if WEN = '1' then
                 REGS(CONV_INTEGER(ADR))<=DI;
             else
                 DO<=REGS(CONV_INTEGER(ADR));
             end if;
-           end if;
-        end if;     
-    end if;
+           
+        end if;
+  end if;     
   
 end process P_ACCESS;
 

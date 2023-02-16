@@ -1,0 +1,13 @@
+Time resolution is 1 ps
+WARNING: "/wrk/ci/prod/2022.1/rdi_builds/continuous/2022_04_18_3526262/data/verilog/src/unisims/RAMB18E1.v" Line 983: Timing violation in scope /test_memory/L1/REGS_reg/TChk983_319 at time 2569 ps $setuphold (posedge CLKARDCLK,posedge ENARDEN,(0:0:0),(0:0:0),notifier_a,clkardclk_en_p,clkardclk_en_p,CLKARDCLK_delay,ENARDEN_delay) 
+Error: Memory 0 BAD VALUE
+Time: 62500 ps  Iteration: 0  Process: /test_memory/P_TEST  File: /home/ptm3368a/M1S2/SyntMat/TP6/test_memory.3.vhd
+Failure: FIN DE SIMULATION
+Time: 72500 ps  Iteration: 0  Process: /test_memory/P_TEST  File: /home/ptm3368a/M1S2/SyntMat/TP6/test_memory.3.vhd
+$finish called at time : 72500 ps : File "/home/ptm3368a/M1S2/SyntMat/TP6/test_memory.3.vhd" Line 146
+WARNING: "/wrk/ci/prod/2022.1/rdi_builds/continuous/2022_04_18_3526262/data/verilog/src/unisims/RAMB18E1.v" Line 983: Timing violation in scope /test_memory/L1/REGS_reg/TChk983_319 at time 2569 ps $setuphold (posedge CLKARDCLK,posedge ENARDEN,(0:0:0),(0:0:0),notifier_a,clkardclk_en_p,clkardclk_en_p,CLKARDCLK_delay,ENARDEN_delay) 
+Error: Memory 0 BAD VALUE
+Time: 62500 ps  Iteration: 0  Process: /test_memory/P_TEST  File: /home/ptm3368a/M1S2/SyntMat/TP6/test_memory.3.vhd
+Failure: FIN DE SIMULATION
+Time: 72500 ps  Iteration: 0  Process: /test_memory/P_TEST  File: /home/ptm3368a/M1S2/SyntMat/TP6/test_memory.3.vhd
+$finish called at time : 72500 ps : File "/home/ptm3368a/M1S2/SyntMat/TP6/test_memory.3.vhd" Line 146
