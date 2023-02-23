@@ -62,6 +62,18 @@ begin
 ------------------------------------------------------------------
 -- Mise a jour des sorties dans le domaine concourant
 
+P_ACCESS: process(CLK)
+begin
+   if rising_edge(CLK) then
+        if REN = '0' then
+            DO<=REGS(CONV_INTEGER(R_ADR));
+        elsif WEN = '0' and FULL = '0' then
+            REGS(CONV_INTEGER(W_ADR)) <= DI;
+        end if;
+  end if;     
+  
+end process P_ACCESS;
+
 ----------------------------------------------------------------------------
 -- Process P_WRITE effectue l'ecriture de la donnee dans la file ainsi que
 --		la mise a jour du pointeur d'adresse ecriture.
@@ -72,11 +84,10 @@ begin
 		-- test du RST
 		if RST='0' then
 		  W_ADR <= (others =>'0');	
-		else
-		  if REN = '1' and WEN = '1' and not FULL then 
-		      W_ADR <= conv_std_logic_vector(2,ABUS_WIDTH);
-		end if;
-	end if;
+		elsif WEN = '0' then 
+		      W_ADR <= W_ADR + '1';
+	    end if;
+    end if;
 end process P_WRITE;
 
 ---------------------------------------------------------------------------
@@ -88,62 +99,56 @@ begin
 	if rising_edge(CLK) then
 		-- test du RST
 		if RST='0' then
-			________
-			________
-			________
-			________
-			________
-			________
-			________
-			________
-			________
-			________
-			________
-			________
-		end if;
+			R_ADR <= (others =>'0');	
+		elsif REN = '0' then 
+		      R_ADR <= R_ADR + '1';
+	    end if;
 	end if;
 end process P_READ;
 
 -------------------------------------------------------------------------
 -- Process P_EMPTY indique '1' la FIFO est vide '0' sinon, cette information
 --		 etant mise a jour sur front montant d'horloge
-P_EMPTY:	process(CLK)
-	variable next_R : std_logic_vector (ABUS_WIDTH-1 downto 0);
+P_EMPTY:    process(CLK)
+    variable next_R : std_logic_vector (ABUS_WIDTH-1 downto 0);
 begin
-	if rising_edge(CLK) then
-		-- test du RST
-		if RST='0' then
-			________
-			________
-			________
-			________
-			________
-			________
-			________
-			________
-		end if;
-	end if;
+    if rising_edge(CLK) then
+        -- test du RST
+        if RST='0' then
+            EMPTY <= '1';
+        else next_R := R_adr+1;
+            --if WEN= '0' then
+                if next_R = W_ADR then 
+                    EMPTY <= '1';
+                else 
+                    EMPTY <='0';
+               -- end if; 
+            end if;
+        end if;
+    end if;
 end process P_EMPTY;
 
 ---------------------------------------------------------------------------
 -- Process P_FULL indique '1' la FIFO est pleine '0' sinon, cette information
 --		 etant mise a jour sur front montant d'horloge
-P_FULL:	process(CLK)
-	variable next_W : std_logic_vector (ABUS_WIDTH-1 downto 0);
+P_FULL:    process(CLK)
+    variable next_W : std_logic_vector (ABUS_WIDTH-1 downto 0);
 begin
-	if rising_edge(CLK) then
-		-- test du RST
-		if RST='0' then
-			________
-			________
-			________
-			________
-			________
-			________
-			________
-			________
-		end if;
-	end if;
+    if rising_edge(CLK) then
+        -- test du RST
+        if RST='0' then
+          FULL <= '0';
+        elsif WEN ='1' then
+            next_W := W_adr+'1';
+            --if REN= '0' then
+                if next_W = R_ADR then 
+                    FULL <= '1';
+                else 
+                    FULL <='0';
+                end if;
+            --end if;
+        end if;
+    end if;
 end process P_FULL;
 
 --------------------------------------------------------------------
@@ -153,23 +158,18 @@ end process P_FULL;
 P_MID:	process(CLK)
 	variable temp_W : std_logic_vector (ABUS_WIDTH-1 downto 0);
 begin
-	if rising_edge(CLK) then
-		-- test du RST
-		if RST='0' then
-			________
-			________
-			________
-			________
-			________
-			________
-			________
-			________
-			________
-			________
-			________
-			________
-		end if;
-	end if;
+--	if rising_edge(CLK) then
+--		-- test du RST
+----		if RST='0' then
+----		  MID <= '0';
+----	    else
+----	       temp_W := CONV_INTEGER(W_ADR + '1');
+----	       MID <= '0';
+----	       if temp_W = CONV_INTEGER(ABUS_WIDTH)/2 then
+----	           MID <= '1';
+----	       end if;
+----		end if;
+----	end if;
 end process P_MID;
 
 end behavior;
