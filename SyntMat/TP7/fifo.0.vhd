@@ -65,13 +65,26 @@ begin
 P_ACCESS: process(CLK)
 begin
    if rising_edge(CLK) then
-        if REN = '0' then
-            DO<=REGS(CONV_INTEGER(R_ADR));
-        elsif WEN = '0' and FULL = '0' then
-            REGS(CONV_INTEGER(W_ADR)) <= DI;
+        if REN = '1' then
+            DO<=(others => 'Z');
+            if WEN = '0' and FULL = '0' then
+                REGS(CONV_INTEGER(W_ADR))<=DI;
+            end if;
+        elsif REN = '0' and WEN = '0' and EMPTY = '1' then
+            DO <= (others => '0');
+            REGS(CONV_INTEGER(W_ADR))<=DI;
+        elsif FULL = '1' and WEN = '0' then
+            REGS(CONV_INTEGER(W_ADR))<=DI;
+        elsif FULL = '1' and WEN = '0' and REN = '0' then
+            DO <= REGS(CONV_INTEGER(R_ADR));
+            REGS(CONV_INTEGER(W_ADR))<=DI;
+        elsif REN = '0' and EMPTY = '0' then
+            DO <= REGS(CONV_INTEGER(R_ADR));
+            if WEN = '0' and FULL = '0' then
+                REGS(CONV_INTEGER(W_ADR))<=DI;
+            end if;
         end if;
-  end if;     
-  
+    end if;
 end process P_ACCESS;
 
 ----------------------------------------------------------------------------
@@ -100,8 +113,11 @@ begin
 		-- test du RST
 		if RST='0' then
 			R_ADR <= (others =>'0');	
-		elsif REN = '0' then 
+		elsif (REN = '0' and EMPTY /= '1') or ( FULL = '1' and WEN = '0') then 
 		      R_ADR <= R_ADR + '1';
+	    end if;
+	    if (REN = '0' and WEN = '0' and EMPTY = '1' ) then
+	       R_ADR <= (others =>'0');
 	    end if;
 	end if;
 end process P_READ;
@@ -116,7 +132,8 @@ begin
         -- test du RST
         if RST='0' then
             EMPTY <= '1';
-        else next_R := R_adr+1;
+        elsif REN = '0' then
+             next_R := R_adr+1;
             --if WEN= '0' then
                 if next_R = W_ADR then 
                     EMPTY <= '1';
@@ -138,7 +155,7 @@ begin
         -- test du RST
         if RST='0' then
           FULL <= '0';
-        elsif WEN ='1' then
+        elsif WEN ='0' then
             next_W := W_adr+'1';
             --if REN= '0' then
                 if next_W = R_ADR then 
