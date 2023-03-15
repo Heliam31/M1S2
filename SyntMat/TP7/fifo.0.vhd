@@ -293,23 +293,10 @@ end process P_FULL;
 
 
 P_MID:	process(CLK)
-	--variable temp_W : std_logic_vector (ABUS_WIDTH-1 downto 0);
-	variable temp_W : integer;
-	variable temp_R : integer;
+	variable temp_W : std_logic_vector (ABUS_WIDTH-1 downto 0);
 begin
 	if rising_edge(CLK) then
-	    if WEN = '1' then
-	       temp_W := CONV_INTEGER(W_ADR);
-	    end if;
-	    if WEN = '0' then
-	       temp_W := CONV_INTEGER(W_ADR)+1;
-	    end if;
-	    if REN = '1' then 
-	       temp_R := CONV_INTEGER(R_ADR);
-	    end if;
-	    if REN = '0' then
-	       temp_R := CONV_INTEGER(R_ADR)+1;
-	    end if;
+	    temp_W := W_ADR ;
 		-- test du RST
 		if RST='0' then
 	      MID <= '0';
@@ -324,27 +311,70 @@ begin
 --          MID <= '0';
 --          end if;
 --        end if;
-        elsif EMPTY = '1' then
-            MID <= '0';
-        elsif FULL = '1' then
-            MID <= '1';
-          elsif temp_W > temp_R then
-            --W_ADR - R_ADR = taille / 2
-            if temp_W - temp_R >= (2**ABUS_WIDTH)/2 then
-                MID <= '1';
-            else
-                MID <= '0';
-            end if;
-          elsif temp_W < temp_R then
-            --R_ADR - W_ADR = taille / 2
-            if temp_R - temp_W <= (2**ABUS_WIDTH)/2 then
-                MID <= '1';
-            else
-                MID <= '0';
-            end if;
-          end if;        
+        else 
+           MID <= '1';
+           for i in temp_W'high-1 downto temp_W'low loop
+                if temp_W(i) /= R_ADR(i) then
+                    MID <= '0';
+                end if;
+           end loop;
+        end if;
 	end if;
 end process P_MID;
 
+--enleve premier bit W et R, si le reste est = alors mid = 1
 end behavior;
 
+--Essai 2
+--P_MID:	process(CLK)
+--	--variable temp_W : std_logic_vector (ABUS_WIDTH-1 downto 0);
+--	variable temp_W : integer;
+--	variable temp_R : integer;
+--begin
+--	if rising_edge(CLK) then
+--	    if WEN = '1' then
+--	       temp_W := CONV_INTEGER(W_ADR);
+--	    elsif WEN = '0' then
+--	       temp_W := CONV_INTEGER(W_ADR)+1;
+--	    end if;
+--	    if REN = '1' then 
+--	       temp_R := CONV_INTEGER(R_ADR);
+--	    end if;
+--	    if REN = '0' then
+--	       temp_R := CONV_INTEGER(R_ADR)+1;
+--	    end if;
+--		-- test du RST
+--		if RST='0' then
+--	      MID <= '0';
+----        Essai 1 : temp_W = temp_W + temp_R / 2
+----        elsif WEN = REN and MID = '1' then
+----          MID <= '1';
+----        elsif (WEN = '0' AND REN = '1') OR (WEN = '1' AND REN = '0') then
+----          temp_W := (CONV_INTEGER(W_ADR)+1+CONV_INTEGER(R_ADR))/2;
+----          if temp_W = 2 then
+----              MID <= '1';
+----          else
+----          MID <= '0';
+----          end if;
+----        end if;
+--        elsif EMPTY = '1' then
+--            MID <= '0';
+--        elsif FULL = '1' then
+--            MID <= '1';
+--          elsif temp_W > temp_R then
+--            --W_ADR - R_ADR = taille / 2
+--            if temp_W - temp_R >= (2**ABUS_WIDTH)/2 then
+--                MID <= '1';
+--            else
+--                MID <= '0';
+--            end if;
+--          elsif temp_W < temp_R then
+--            --R_ADR - W_ADR = taille / 2
+--            if temp_R - temp_W <= (2**ABUS_WIDTH)/2 then
+--                MID <= '1';
+--            else
+--                MID <= '0';
+--            end if;
+--          end if;        
+--	end if;
+--end process P_MID;

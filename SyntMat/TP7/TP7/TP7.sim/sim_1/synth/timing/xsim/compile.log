@@ -1,12 +1,4 @@
 INFO: [VRFC 10-2263] Analyzing Verilog file "/home/ptm3368a/M1S2/SyntMat/TP7/TP7/TP7.sim/sim_1/synth/timing/xsim/test_fifo_time_synth.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module RAM32M_UNIQ_BASE_
-INFO: [VRFC 10-311] analyzing module RAM32M_HD1
-INFO: [VRFC 10-311] analyzing module RAM32M_HD2
-INFO: [VRFC 10-311] analyzing module RAM32M_HD3
-INFO: [VRFC 10-311] analyzing module RAM32M_HD5
-INFO: [VRFC 10-311] analyzing module RAM32X1D_UNIQ_BASE_
-INFO: [VRFC 10-311] analyzing module RAM32X1D_HD4
 INFO: [VRFC 10-311] analyzing module fifo
 INFO: [VRFC 10-311] analyzing module glbl
-INFO: [VRFC 10-163] Analyzing VHDL file "/home/ptm3368a/M1S2/SyntMat/TP7/test_fifo.0.vhd" into library xil_defaultlib
-INFO: [VRFC 10-3107] analyzing entity 'test_fifo'
