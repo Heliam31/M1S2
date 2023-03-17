@@ -1,4 +1,2 @@
-INFO: [VRFC 10-163] Analyzing VHDL file "/home/ptm3368a/M1S2/SyntMat/TP7/fifo.0.vhd" into library xil_defaultlib
-INFO: [VRFC 10-3107] analyzing entity 'fifo'
 INFO: [VRFC 10-163] Analyzing VHDL file "/home/ptm3368a/M1S2/SyntMat/TP7/test_fifo.0.vhd" into library xil_defaultlib
 INFO: [VRFC 10-3107] analyzing entity 'test_fifo'
