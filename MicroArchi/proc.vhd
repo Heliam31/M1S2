@@ -23,14 +23,25 @@ architecture dataPath_arch of dataPath is
 begin
 
   -- FE
+  FE : entity work.etageFE
+        port map(npc, npc_fw_br, PCSrc_ER, Bpris_EX, GEL_LI, clk, pc_plus_4, i_FE);
 
   -- DE
+  DE : entity work.etageDE
+        port map(i_DE, WD_ER, pc_plus_4, Op3_ER, RegSrc, immSrc, RegWr, clk, Reg1, Reg2, Op3_DE, Op1, Op2);
+
 
   -- EX
+  EX : entity work.etageEX
+        port map(Op1_EX, Op2_EX, ExtImm_EX, Res_fwd_ME, Res_fwd_ER, Op3_EX, EA_EX, EB_EX, ALUCtrl_EX, ALUSrc_EX, CC, Op3_EX_out, Res_EX, WD_EX, npc_fw_br);
 
   -- ME
+  ME : entity work.etageME
+        port map(Res_ME, WD_ME, OP3_ME, clk, MemWR_Mem, Res_Mem_ME, Res_ALU_ME, Res_fwd_ME, Op3_ME_out );
+
 
   -- RE
-
+  RE : entity work.etageRE
+    port map(Res_Mem_RE, Res_ALU_RE, Op3_RE, MemToReg_RE,  Res_RE, Op3_RE_out);
 
 end architecture;
