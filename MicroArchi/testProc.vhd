@@ -262,3 +262,111 @@ begin
 end process;
 
 end arch_test;  
+
+
+------------------------------------------------Processeur-------------------------------------------------------
+--lancer le code
+-- ghdl -a proc.vhd mem.vhd reg_bank.vhd combi.vhd etages.vhd testProc.vhd
+-- ghdl -e testProc
+-- ghdl -r testProc --wave=output.ghw
+-- gtkwave output.ghw
+
+LIBRARY IEEE;
+USE IEEE.STD_LOGIC_1164.ALL;
+USE IEEE.NUMERIC_STD.ALL;
+
+entity testProc is
+end entity;
+
+architecture arch_test of testProc is
+    signal clk_t,  ALUSrc_EX_t, MemWr_Mem_t, MemWr_RE_t, PCSrc_ER_t, Bpris_EX_t, Gel_LI_t, Gel_DI_t, RAZ_DI_t, RegWR_t, Clr_EX_t, MemToReg_RE_t :  std_logic;
+    signal RegSrc_t, EA_EX_t, EB_EX_t, immSrc_t, ALUCtrl_EX_t : std_logic_vector(1 downto 0);
+    signal instr_DE_t :  std_logic_vector(31 downto 0);
+    signal a1_t, a2_t, CC_t:  std_logic_vector(3 downto 0);
+
+begin
+    RE : entity work.dataPath
+        port map(clk_t,  ALUSrc_EX_t, MemWr_Mem_t, MemWr_RE_t, PCSrc_ER_t, Bpris_EX_t, Gel_LI_t, Gel_DI_t, RAZ_DI_t, RegWR_t, Clr_EX_t, MemToReg_RE_t, RegSrc_t, EA_EX_t, EB_EX_t, immSrc_t, ALUCtrl_EX_t, instr_DE_t, a1_t, a2_t, CC_t);
+
+process
+begin
+
+    ALUSrc_EX_t <= '1';
+    MemWr_Mem_t <= '1';
+    MemWr_RE_t <= '1';
+    PCSrc_ER_t <= '0';
+    Bpris_EX_t <= '0';
+    Gel_LI_t <= '1';
+    Gel_DI_t <= '1';
+    RAZ_DI_t <= '1';
+    RegWR_t <= '1';
+    Clr_EX_t <= '1';
+    MemToReg_RE_t <= '1';
+    
+    RegSrc_t <= (others => '0');
+    EA_EX_t <= (others => '0');
+    EB_EX_t <= (others => '0');
+    immSrc_t <= (others => '0');
+    ALUCtrl_EX_t <= (others => '0');
+
+    clk_t <= '0';
+    wait for 5 ns;
+    clk_t <= '1';
+    wait for 5 ns;
+    clk_t <= '0';
+    wait for 5 ns;
+    clk_t <= '1';
+    wait for 5 ns;
+    clk_t <= '0';
+    wait for 5 ns;
+    clk_t <= '1';
+    wait for 5 ns;
+    clk_t <= '0';
+    wait for 5 ns;
+    clk_t <= '1';
+    wait for 5 ns;
+    clk_t <= '0';
+    wait for 5 ns;
+    clk_t <= '1';
+    wait for 5 ns;
+    clk_t <= '0';
+    wait for 5 ns;
+    clk_t <= '1';
+    wait for 5 ns;
+    clk_t <= '0';
+    wait for 5 ns;
+    clk_t <= '1';
+    wait for 5 ns;
+    clk_t <= '0';
+    wait for 5 ns;
+    clk_t <= '1';
+    wait for 5 ns;
+    clk_t <= '0';
+    wait for 5 ns;
+    clk_t <= '1';
+    wait for 5 ns;
+    clk_t <= '0';
+    wait for 5 ns;
+    clk_t <= '1';
+    wait for 5 ns;
+    clk_t <= '0';
+    wait for 5 ns;
+    clk_t <= '1';
+    wait for 5 ns;
+    clk_t <= '0';
+    wait for 5 ns;
+    clk_t <= '1';
+    wait for 5 ns;
+    clk_t <= '0';
+    wait for 5 ns;
+    clk_t <= '1';
+    wait for 5 ns;
+    clk_t <= '0';
+    wait for 5 ns;
+    clk_t <= '1';
+    wait for 5 ns;
+
+    wait;
+end process;
+
+end arch_test;  
