@@ -18,16 +18,35 @@ def json_send(ip, port, data):
 #-----------------Pour le lookup----------------------------------
 
 def query (ip,port, id):
+    data = {    'request' : 'QUERY',
+                    'ip' : ip,
+                    'port' : port,
+                    'id' : id
+                }
+    json_send(ip,port,data)
+
     #utilisé par le node qui fait la requete
-    return 0
+
 
 def lookup (ip,port, id):
+    data = {    'request' : 'LOOKUP',
+                    'ip' : ip,
+                    'port' : port,
+                    'id' : id
+                }
+    json_send(ip,port,data)
     #utilisé par nodes dans le chord pour chercher id parmis les nodes
-    return 0
+    
 
-def response (id, present, [value]):
+def response (id, present, value):
+    data = {    'request' : 'RESPONSE',
+                    'ip' : ip,
+                    'present' : present,
+                    'value' : value
+                }
+    json_send(ip,port,data) 
     #utilisé par le noeud qui a le id, present boolean si il y a bien l'id, value optionnel
-
+    return 0
 #--------------------Pour le join----------------------------------
 
 def join(ip, port):

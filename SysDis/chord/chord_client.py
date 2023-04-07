@@ -1,5 +1,5 @@
 #! /usr/bin/python3
-
+import random
 import socket
 import threading
 from chord_tools import *
@@ -17,8 +17,13 @@ def printer():
 printer_thread = threading.Thread(target=printer)
 printer_thread.start()
 
+
+query('localhost', 8001, random.randint(1, 64))
+
+'''
 data = [{'test':22}, 'other test', 88]
 for _ in range(3):
     json_send('localhost', 8001, data)
+'''
 
-
+ 

@@ -18,4 +18,5 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as serversocket:
         print('accept')
         json_data = json_recv(clientsocket)
         print(json_data)
+        print(json_data['request'])
         json_send('localhost', 9000, 42)
