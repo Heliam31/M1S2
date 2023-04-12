@@ -3,20 +3,36 @@
 import socket
 from chord_tools import *
 
-myIp = '130.120.232.10'
-IpClient = '130.120.232.9'
-host = socket.gethostname()
+moi = Noeud()
+IpClient = 'pc-u3-305-9'
+moi.Port = 8001
+moi.myKey = 50
+#IpSuivant = ""
+#IpPrecedent = ""
+
+
+myIp = socket.gethostname()
+#Table de voisinnage
+moi.IpSuivant = "pc-u3-305-09"
+moi.PortSuivant = 9000
+moi.IdSuivant = 200
+
+moi.IpPrecedent = "pc-u3-305-09"
+moi.PortPrecedent = 9000
+moi.IdPrecedent = 200
+moi.host = myIp
 print(host)
+
+
 
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as serversocket:
     serversocket.bind(('', 8001))
+    set(150, 10, moi)
     serversocket.listen(5)
     print('listening on port:', serversocket.getsockname()[1])
-    while True:
-        (clientsocket, address) = serversocket.accept()
-        print('accept')
-        json_data = json_recv(clientsocket)
-        print(json_data)
-        print(json_data['request'])
-        json_send('localhost', 9000, 42)
+    json_data = json_recv(clientsocket)
+    print(json_data)
+    if (json_data['request'] == 'QUERY'):
+        lookup (json_data['ip'],json_data['port'], json_data['id'])
+    json_send(IpSuivant, PortSuivant, 42)
