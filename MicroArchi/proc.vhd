@@ -40,16 +40,13 @@ begin
 
   --Registre entre pour Op1
   RegOP1 : entity work.Reg32sync
-        port map(Op1_DE, Op1_EX, Gel_DI, Clr_EX, clk);  
+        port map(Op1_DE, Op1_EX, '1', Clr_EX, clk);  
 
   --Registre pour Op2
   RegOp2 : entity work.Reg32sync
         port map(Op2_DE, Op2_EX, '1', Clr_EX, clk); 
         
-  --Registre pour Op3
-  RegOp3 : entity work.Reg4
-        port map(Op3_DE, Op3_EX, '1', Clr_EX, clk);
-
+  --Registre pour Opinstr(23) = '0' then
   --Registre pour extImm
   Regext : entity work.Reg32sync
         port map(extImm_DE, extImm_EX, '1', Clr_EX, clk);
@@ -61,6 +58,11 @@ begin
   --Registre pour a2
   Rega2 : entity work.Reg4
         port map(a2_DE, a2, '1', Clr_EX, clk);
+
+    --Registre pour OP3
+  Rega2 : entity work.Reg4
+        port map(Op3_DE, OP3_EX, '1', Clr_EX, clk);
+
 
   Res_fwd_ER <= Res_RE;
   
@@ -95,5 +97,61 @@ begin
   -- RE
   RE : entity work.etageRE
     port map(Res_Mem_RE, Res_ALU_RE, Op3_RE, MemToReg_RE,  Res_RE, Op3_RE_out);
+ 
+end architecture;
 
+--------------------------------------------------
+
+-- Unite de controle
+
+LIBRARY IEEE;
+USE IEEE.STD_LOGIC_1164.ALL;
+USE IEEE.NUMERIC_STD.ALL;
+
+entity UniteCtrl is
+  port(
+    instr : in std_logic_vector(31 downto 0);
+    PCSrc, RegWr, MemToReg, MemWr, Branch, CCWr, AluSrc : out std_logic;
+    AluCtrl, ImmSrc, RegSrc : out std_logic_vector(1 downto 0);
+    Cond : out std_logic_vector(3 downto 0)
+);
+end entity;
+
+
+architecture UniteCtrl_arch of UniteCtrl is
+begin
+      Cond <= instr(31 downto 28);
+
+      AluCtrl <= "00" when instr(27 downto 26) = "10" or (instr(27 downto 26) = "00" and instr(24 downto 21) = "0100") else
+                 "01" when instr(27 downto 26) = "00" and  (instr(24 downto 21) = "0010" or instr(24 downto 21) = "1010") else
+                 "10" when instr(27 downto 26) = "00" and instr(24 downto 21) = "0000" else 
+                 "11" when instr(27 downto 26) = "00" and instr(24 downto 21) = "1100" ;
+      
+      Branch <= '1' when instr(27 downto 26) = "10" else
+                '0' ;
+
+      MemToReg <= '1' when (instr(27 downto 26) = "01" and instr(20) = '1') or (instr(27 downto 26) = "10") else
+                  '0' when instr(27 downto 26) = "00";
+      
+      MemWr <=  '1' when  instr(27 downto 26) = "01" and instr(20) = '0' else
+                '0' when instr(27 downto 26) = "00" or instr(27 downto 26) = "10" or ( instr(27 downto 26) = "01" and instr(20) = '1' );
+
+      AluSrc <= '0' when instr(27 downto 26) = "00" else
+                '1';
+      
+      ImmSrc <= "01" when instr(27 downto 26) = "01" else
+                "00" when instr(27 downto 26) = "00" and instr(25) = '1' else
+                "10" when instr(27 downto 26) = "10";
+
+      RegWr <= '0' when (instr(27 downto 26) = "00" and (inst(25) = '0' and inst(20) = '1')) or (instr(27 downto 26) = "01" and inst(20) = '0') or (instr(27 downto 26) = "10") else
+               '1' when instr(27 downto 26) = "00" and (inst(25) = '0' or inst(25) = '1') or (instr(27 downto 26) = "01" and inst(20) = '1');
+
+      RegSrc <= "00" when (instr(27 downto 26) = "00" and inst(25) = '0') else
+                "10" when (instr(27 downto 26) = "01" and inst(20) = '0');
+
+      RegSrc(0) <= '1' when instr(27 downto 26) = "10" else
+                   '0' when (instr(27 downto 26) = "00" and inst(25) = '1') or (instr(27 downto 26) = "01" and inst(25) = '1');
+
+      PCSrc <= '0' when ((instr(27 downto 26) = "00" and ((inst(25) = '0' and inst(20) = '1')or instr(25)='1')) and instr(15 downto 12) /= "1111") or (instr(27 downto 26) = "01" and instr(15 downto 12) /= "1111") else
+               '1' when ;
 end architecture;

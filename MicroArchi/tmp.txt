@@ -1,0 +1,54 @@
+      if instr(27 downto 26) = "00" then
+            if instr (25) = '0' then
+                  if instr (20) = '1' then
+                        Branch <= '0';
+                        MemToReg <= '0';
+                        MemWr <= '0';
+                        AluSrc <= '0';
+                        RegWr <= '0';
+                        RegSrc <= "00";
+                  else
+                        Branch <= '0';
+                        MemToReg <= '0';
+                        MemWr <= '0';
+                        AluSrc <= '0';
+                        RegWr <= '1';
+                        RegSrc <= "00";
+                  end if;
+                  
+            else if instr (25) = '1' then
+                  Branch <= '0';
+                  MemToReg <= '0';
+                  MemWr <= '0';
+                  AluSrc <= '1';
+                  ImmSrc <= "00";
+                  RegWr <= '1';
+                  RegSrc(0) <= '0';
+
+      else if instr(27 downto 26) = "01" then
+            if instr(20) = '1' then
+                  Branch <= '0';
+                  MemToReg <= '1';
+                  MemWr <= '0';
+                  AluSrc <= '1';
+                  ImmSrc <= "01";
+                  RegWr <= '1';
+                  RegSrc(0) <= '0';
+            else if instr(20) = '0' then
+                  Branch <= '0';
+                  MemWr <= '1';
+                  AluSrc <= '1';
+                  ImmSrc <= "01";
+                  RegWr <= '0';
+                  RegSrc <= "10";
+            end if;
+      else if instr(27 downto 26)Branch <= '0';
+            MemToReg <= '1';
+            MemWr <= '0';
+            AluSrc <= '1';
+            ImmSrc <= "01";
+            RegWr <= '1';
+            RegSrc(0) <= '0';
+            RegWr <= '0';
+            RegSrc(0) <= '1';
+      end if;
