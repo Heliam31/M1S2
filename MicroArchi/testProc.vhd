@@ -1,6 +1,6 @@
 ------------------------------------------------Etage FE-------------------------------------------------------
 --lancer le code
--- ghdl -a proc.vhd mem.vhd reg_bank.vhd combi.vhd etages.vhd testProc.vhd
+-- ghdl -a mem.vhd reg_bank.vhd combi.vhd etages.vhd proc.vhd testProc.vhd
 -- ghdl -e testFE
 -- ghdl -r testFE --wave=output.ghw
 -- gtkwave output.ghw
@@ -64,7 +64,7 @@ end arch_test;
 
 ------------------------------------------------Etage DE-------------------------------------------------------
 --lancer le code
--- ghdl -a proc.vhd mem.vhd reg_bank.vhd combi.vhd etages.vhd testProc.vhd
+-- ghdl -a mem.vhd reg_bank.vhd combi.vhd etages.vhd proc.vhd testProc.vhd
 -- ghdl -e testDE
 -- ghdl -r testDE --wave=output.ghw
 -- gtkwave output.ghw
@@ -117,7 +117,7 @@ end arch_test;
 
 ------------------------------------------------Etage EX-------------------------------------------------------
 --lancer le code
--- ghdl -a proc.vhd mem.vhd reg_bank.vhd combi.vhd etages.vhd testProc.vhd
+-- ghdl -a mem.vhd reg_bank.vhd combi.vhd etages.vhd proc.vhd testProc.vhd
 -- ghdl -e testEX
 -- ghdl -r testEX --wave=output.ghw
 -- gtkwave output.ghw
@@ -169,7 +169,7 @@ end arch_test;
 
 ------------------------------------------------Etage ME-------------------------------------------------------
 --lancer le code
--- ghdl -a proc.vhd mem.vhd reg_bank.vhd combi.vhd etages.vhd testProc.vhd
+-- ghdl -a mem.vhd reg_bank.vhd combi.vhd etages.vhd proc.vhd testProc.vhd
 -- ghdl -e testME
 -- ghdl -r testME --wave=output.ghw
 -- gtkwave output.ghw
@@ -220,7 +220,7 @@ end arch_test;
 
 ------------------------------------------------Etage RE-------------------------------------------------------
 --lancer le code
--- ghdl -a proc.vhd mem.vhd reg_bank.vhd combi.vhd etages.vhd testProc.vhd
+-- ghdl -a mem.vhd reg_bank.vhd combi.vhd etages.vhd proc.vhd testProc.vhd
 -- ghdl -e testRE
 -- ghdl -r testRE --wave=output.ghw
 -- gtkwave output.ghw
@@ -266,7 +266,7 @@ end arch_test;
 
 ------------------------------------------------Processeur-------------------------------------------------------
 --lancer le code
--- ghdl -a proc.vhd mem.vhd reg_bank.vhd combi.vhd etages.vhd testProc.vhd
+-- ghdl -a mem.vhd reg_bank.vhd combi.vhd etages.vhd proc.vhd testProc.vhd
 -- ghdl -e testProc
 -- ghdl -r testProc --wave=output.ghw
 -- gtkwave output.ghw
@@ -285,7 +285,7 @@ architecture arch_test of testProc is
     signal a1_t, a2_t, CC_t:  std_logic_vector(3 downto 0);
 
 begin
-    RE : entity work.dataPath
+    data : entity work.dataPath
         port map(clk_t,  ALUSrc_EX_t, MemWr_Mem_t, MemWr_RE_t, PCSrc_ER_t, Bpris_EX_t, Gel_LI_t, Gel_DI_t, RAZ_DI_t, RegWR_t, Clr_EX_t, MemToReg_RE_t, RegSrc_t, EA_EX_t, EB_EX_t, immSrc_t, ALUCtrl_EX_t, instr_DE_t, a1_t, a2_t, CC_t);
 
 process
@@ -337,36 +337,72 @@ begin
     wait for 5 ns;
     clk_t <= '1';
     wait for 5 ns;
-    clk_t <= '0';
-    wait for 5 ns;
-    clk_t <= '1';
-    wait for 5 ns;
-    clk_t <= '0';
-    wait for 5 ns;
-    clk_t <= '1';
-    wait for 5 ns;
-    clk_t <= '0';
-    wait for 5 ns;
-    clk_t <= '1';
-    wait for 5 ns;
-    clk_t <= '0';
-    wait for 5 ns;
-    clk_t <= '1';
-    wait for 5 ns;
-    clk_t <= '0';
-    wait for 5 ns;
-    clk_t <= '1';
-    wait for 5 ns;
-    clk_t <= '0';
-    wait for 5 ns;
-    clk_t <= '1';
-    wait for 5 ns;
-    clk_t <= '0';
-    wait for 5 ns;
-    clk_t <= '1';
-    wait for 5 ns;
-
     wait;
 end process;
+end arch_test;
+------------------------------------------------Fin-------------------------------------------------------
+--lancer le code
+-- ghdl -a mem.vhd reg_bank.vhd combi.vhd etages.vhd proc.vhd testProc.vhd
+-- ghdl -e testEnd
+-- ghdl -r testEnd --wave=output.ghw
+-- gtkwave output.ghw
 
-end arch_test;  
+LIBRARY IEEE;
+USE IEEE.STD_LOGIC_1164.ALL;
+USE IEEE.NUMERIC_STD.ALL;
+
+entity testEnd is
+end entity;
+
+architecture arch_test of testEnd is
+    signal clk_t : std_logic;
+begin
+    CPU : entity work.CPU
+        port map(clk_t);
+process
+begin
+
+    clk_t <= '0';
+    wait for 5 ns;
+    clk_t <= '1';
+    wait for 5 ns;
+    clk_t <= '0';
+    wait for 5 ns;
+    clk_t <= '1';
+    wait for 5 ns;
+    clk_t <= '0';
+    wait for 5 ns;
+    clk_t <= '1';
+    wait for 5 ns;
+    clk_t <= '0';
+    wait for 5 ns;
+    clk_t <= '1';
+    wait for 5 ns;
+    clk_t <= '0';
+    wait for 5 ns;
+    clk_t <= '1';
+    wait for 5 ns;
+    clk_t <= '0';
+    wait for 5 ns;
+    clk_t <= '1';
+    wait for 5 ns;
+    clk_t <= '0';
+    wait for 5 ns;
+    clk_t <= '1';
+    wait for 5 ns;
+    clk_t <= '0';
+    wait for 5 ns;
+    clk_t <= '1';
+    wait for 5 ns;
+    clk_t <= '0';
+    wait for 5 ns;
+    clk_t <= '1';
+    wait for 5 ns;
+    clk_t <= '0';
+    wait for 5 ns;
+    clk_t <= '1';
+    wait for 5 ns;
+    
+    wait;
+end process;
+end arch_test;

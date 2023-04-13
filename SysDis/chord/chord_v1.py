@@ -3,16 +3,16 @@
 import socket
 from chord_tools import *
 
-moi = Noeud()
 IpClient = 'pc-u3-305-9'
+
+
+moi = Noeud()
+
 moi.Port = 8001
 moi.myKey = 50
-#IpSuivant = ""
-#IpPrecedent = ""
-
-
 myIp = socket.gethostname()
-#Table de voisinnage
+moi.host = myIp
+
 moi.IpSuivant = "pc-u3-305-09"
 moi.PortSuivant = 9000
 moi.IdSuivant = 200
@@ -20,7 +20,7 @@ moi.IdSuivant = 200
 moi.IpPrecedent = "pc-u3-305-09"
 moi.PortPrecedent = 9000
 moi.IdPrecedent = 200
-moi.host = myIp
+
 print(host)
 
 

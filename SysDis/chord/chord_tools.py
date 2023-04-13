@@ -28,27 +28,27 @@ class Noeud:
         self.myKey = 0
         self.data = {}
 
-    def is_child (id, moi):
-        if (moi.IdPrecedent > moi.myKey):
-            if(id <= moi.myKey or id > moi.IdPrecedent):
+    def is_child (id):
+        if (self.IdPrecedent > self.myKey):
+            if(id <= self.myKey or id > self.IdPrecedent):
                 return 1
             else:
                 return 0
         else:
-            if(id <= moi.myKey and id > moi.IdPrecedent):
+            if(id <= self.myKey and id > self.IdPrecedent):
                 return 1
             else:
                 return 0
 
     #-----------------Pour le lookup----------------------------------
 
-    def query (ip,port, id, moi):
+    def query (ip,port, id):
         data = {    'request' : 'QUERY',
                         'ip' : ip,
                         'port' : port,
                         'id' : id
                     }
-        json_send(moi.IpSuivant,moi.PortSuivant,data)
+        json_send(self.IpSuivant,self.PortSuivant,data)
 
         #utilisé par le node qui fait la requete
 
@@ -62,9 +62,9 @@ class Noeud:
         #utilisé par le noeud qui a le id, present boolean si il y a bien l'id, value optionnel
         return 0
 
-    def lookup (ip,port, id, moi):
+    def lookup (ip,port, id):
         if (is_child (id)):
-            response(id, 1, moi.data[id], ip, port)
+            response(id, 1, self.data[id], ip, port)
         #else if ():
         #    response(id, 0, "0", ip, port)
         else:
@@ -73,7 +73,7 @@ class Noeud:
                             'port' : port,
                             'id' : id
                         }
-            json_send(moi.IpSuivant,moi.PortSuivant,sendaj)
+            json_send(self.IpSuivant,self.PortSuivant,sendaj)
         #utilisé par nodes dans le chord pour chercher id parmis les nodes
         
     #--------------------Pour le join----------------------------------
@@ -99,16 +99,16 @@ class Noeud:
 
     #--------------------Modif de valeur----------------------------------
 
-    def set(key, value, moi):
+    def set(key, value):
         #-> if the node does not own the key, send it to the next node. No acknowledgement
         if (is_child (id)):
-            moi.data[key] = value
+            self.data[key] = value
         else:
             sendaj = {    'request' : 'SET',
                             'key' : key,
                             'value' : value
                         }
-            json_send(moi.IpSuivant,moi.PortSuivant,sendaj)
+            json_send(self.IpSuivant,self.PortSuivant,sendaj)
         return 0
 
     #-----------------------Pour le quit----------------------------------
