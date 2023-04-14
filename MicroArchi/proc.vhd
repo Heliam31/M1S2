@@ -207,7 +207,7 @@ entity UniteAlea is
             a1, a2, a1_DE, a2_DE, Op3_ME_out, Op3_RE_out, Op3_EX_out : in std_logic_vector (3 downto 0);
             EA_EX, EB_EX : out std_logic_vector (1 downto 0);
             Gel_LI, En_DI, Clr_EX, Clr_DI : out std_logic;
-            RegWr_RE, RegWr_Mem, MemToReg_EX, Bpris_EX, PCSrc_DE, PCSrc_EX, PCSrc_ME, PCSrc_ER : in std_logic
+            RegWr_RE, RegWr_Mem, Bpris_EX, PCSrc_DE, MemToReg_EX, PCSrc_ER : in std_logic
     );
 end entity;
  
@@ -226,9 +226,9 @@ begin
       LDRStall <= '1' when (a1_DE = Op3_EX_out or a2_DE = Op3_EX_out) and MemToReg_EX = '1'else
                   '0';
 
-      Gel_LI <= not(LDRStall + PCSrc_DE + PCSrc_EX + PCSrc_ME);
-      Clr_DI <= not(PCSrc_DE + PCSrc_EX + PCSrc_ME + PCSrc_ER + Bpris_EX);
-      Clr_EX <= not(LDRStall + Bpris_EX);
+      Gel_LI <= not(LDRStall or PCSrc_DE or MemToReg_EX or RegWr_Mem);
+      Clr_DI <= not(PCSrc_DE or MemToReg_EX or RegWr_Mem or PCSrc_ER or Bpris_EX);
+      Clr_EX <= not(LDRStall or Bpris_EX);
       En_DI <= not(LDRStall);
 
 end architecture;
@@ -239,32 +239,35 @@ end architecture;
  USE IEEE.STD_LOGIC_1164.ALL;
  USE IEEE.NUMERIC_STD.ALL;
 
- entity CPU is
+ entity cpuEntier is
       port(
-        clk : in std_logic;
-        instruPlot : out std_logic_vector(31 downto 0);
-        CCPlot : out std_logic_vector (3 downto 0)
+        clk : in std_logic
+      --   instruPlot : out std_logic_vector(31 downto 0);
+      --   CCPlot : out std_logic_vector (3 downto 0)
     );
 end entity;
 
-architecture CPU_arch of CPU is
-      signal ALUSrc_EX, MemWr_Mem, MemWr_RE, PCSrc_ER, Bpris_EX, Gel_LI, Gel_DI, RAZ_DI, RegWR, Clr_EX, MemToReg_RE :  std_logic;
+architecture cpuEntier_arch of cpuEntier is
+      signal ALUSrc_EX, CCWr_EX, MemWr_Mem, MemWr_RE, PCSrc_ER, Bpris_EX, Gel_LI, Gel_DI, RAZ_DI, RegWR, Clr_EX, MemToReg_RE :  std_logic;
       signal RegSrc, EA_EX, EB_EX, immSrc, ALUCtrl_EX : std_logic_vector(1 downto 0);
       signal Res_RE, npc_fwd_br, npc_fw_br, pc_plus_4, i_FE, i_DE, Op1_DE, Op2_DE, Op1_EX, instr_DE, Op2_EX, extImm_DE, extImm_EX, Res_EX, Res_ME, WD_EX, WD_ME, Res_Mem_ME, Res_Mem_RE, Res_ALU_ME, Res_ALU_RE, Res_fwd_ME, Res_fwd_ER : std_logic_vector(31 downto 0);
-      signal Op3_DE, Op3_EX, a1_DE, a1_EX, a2_DE, a2_EX, Op3_EX_out, a1, a2, CC, Op3_ME, Op3_ME_out, Op3_RE, Op3_RE_out : std_logic_vector(3 downto 0);
+      signal Op3_DE, Op3_EX, a1_DE, a1_EX, a2_DE, a2_EX, Cond, Op3_EX_out, a1, a2, CC, CCp, CC_EX, Op3_ME, Op3_ME_out, Op3_RE, Op3_RE_out : std_logic_vector(3 downto 0);
 begin
 Data : entity work.dataPath
       port map(clk, ALUSrc_EX, MemWr_Mem, MemWr_RE, PCSrc_ER, Bpris_EX, Gel_LI, Gel_DI, RAZ_DI, RegWR, Clr_EX, MemToReg_RE, RegSrc, EA_EX, EB_EX, immSrc, ALUCtrl_EX, instr_DE, a1, a2, CC);
 
 Control : entity work.UniteCtrl
-      port map(instr, PCSrc, RegWr, MemToReg, MemWr, Branch, CCWr, AluSrc, AluCtrl, ImmSrc, RegSrc, Cond);
+      port map(instr_DE, PCSrc_ER, RegWr, MemToReg_RE, MemWr_Mem, Bpris_EX, CCWr_EX, AluSrc_EX, AluCtrl_EX, ImmSrc, RegSrc, Cond);
 
 
 Condi : entity work.UniteCond
-      port map(Cond, CC_EX, CC, CCWr_EX, CondEx, CCp);
+      port map(Cond, CC_EX, CC, CCWr_EX, Bpris_EX, CCp);
+
+RegCCP : entity work.Reg4
+      port map(CCp, CC_EX, '1', '1', clk);      
 
 Alea : entity work.UniteAlea
-      port map(a1, a2, a1_DE, a2_DE, Op3_ME_out, Op3_RE_out, Op3_EX_out, EA_EX, EB_EX, Gel_LI, En_DI, Clr_EX, Clr_DI, RegWr_RE, RegWr_Mem, MemToReg_EX, Bpris_EX, PCSrc_DE, PCSrc_EX, PCSrc_ME, PCSrc_ER);
+      port map(a1, a2, a1_DE, a2_DE, Op3_ME_out, Op3_RE_out, Op3_EX_out, EA_EX, EB_EX, Gel_LI, Gel_DI, Clr_EX, RAZ_DI, MemToReg_RE, MemWR_Mem, Bpris_EX, RegWR, AluSrc_EX, PCSrc_ER);
 
 end architecture;
 

@@ -357,7 +357,7 @@ end entity;
 architecture arch_test of testEnd is
     signal clk_t : std_logic;
 begin
-    CPU : entity work.CPU
+    cpuEntier : entity work.cpuEntier
         port map(clk_t);
 process
 begin
