@@ -279,21 +279,20 @@ entity testProc is
 end entity;
 
 architecture arch_test of testProc is
-    signal clk_t,  ALUSrc_EX_t, MemWr_Mem_t, MemWr_RE_t, PCSrc_ER_t, Bpris_EX_t, Gel_LI_t, Gel_DI_t, RAZ_DI_t, RegWR_t, Clr_EX_t, MemToReg_RE_t :  std_logic;
+    signal clk_t,  ALUSrc_EX_t, MemWr_Mem_t, PCSrc_ER_t, Bpris_EX_t, Gel_LI_t, Gel_DI_t, RAZ_DI_t, RegWR_t, Clr_EX_t, MemToReg_RE_t :  std_logic;
     signal RegSrc_t, EA_EX_t, EB_EX_t, immSrc_t, ALUCtrl_EX_t : std_logic_vector(1 downto 0);
     signal instr_DE_t :  std_logic_vector(31 downto 0);
-    signal a1_t, a2_t, CC_t:  std_logic_vector(3 downto 0);
+    signal a1_t, a2_t, CC_t, Op3_RE_Alea_t, Op3_ME_Alea_t, Op3_EX_Alea_t, Reg1_t, Reg2_t :  std_logic_vector(3 downto 0);
 
 begin
     data : entity work.dataPath
-        port map(clk_t,  ALUSrc_EX_t, MemWr_Mem_t, MemWr_RE_t, PCSrc_ER_t, Bpris_EX_t, Gel_LI_t, Gel_DI_t, RAZ_DI_t, RegWR_t, Clr_EX_t, MemToReg_RE_t, RegSrc_t, EA_EX_t, EB_EX_t, immSrc_t, ALUCtrl_EX_t, instr_DE_t, a1_t, a2_t, CC_t);
+        port map(clk_t,  ALUSrc_EX_t, MemWr_Mem_t, PCSrc_ER_t, Bpris_EX_t, Gel_LI_t, Gel_DI_t, RAZ_DI_t, RegWR_t, Clr_EX_t, MemToReg_RE_t, RegSrc_t, EA_EX_t, EB_EX_t, immSrc_t, ALUCtrl_EX_t, instr_DE_t, a1_t, a2_t, CC_t,  Op3_RE_Alea_t, Op3_ME_Alea_t, Op3_EX_Alea_t, Reg1_t, Reg2_t);
 
 process
 begin
 
     ALUSrc_EX_t <= '1';
     MemWr_Mem_t <= '1';
-    MemWr_RE_t <= '1';
     PCSrc_ER_t <= '0';
     Bpris_EX_t <= '0';
     Gel_LI_t <= '1';
