@@ -10,25 +10,25 @@ USE IEEE.NUMERIC_STD.ALL;
 
 entity dataPath is
   port(
-    clk,  ALUSrc_EX, MemWr_Mem, MemWr_RE, PCSrc_ER, Bpris_EX, Gel_LI, Gel_DI, RAZ_DI, RegWR, Clr_EX, MemToReg_RE : in std_logic;
+    clk,  ALUSrc_EX, MemWr_Mem, PCSrc_ER, Bpris_EX, Gel_LI, Gel_DI, RAZ_DI, RegWR, Clr_EX, MemToReg_RE : in std_logic;
     RegSrc, EA_EX, EB_EX, immSrc, ALUCtrl_EX : in std_logic_vector(1 downto 0);
     instr_DE: out std_logic_vector(31 downto 0);
-    a1, a2, CC: out std_logic_vector(3 downto 0)
+    a1, a2, CC, Op3_RE_Alea, Op3_ME_Alea, Op3_EX_Alea, Reg1, Reg2: out std_logic_vector(3 downto 0)
+
 );
 end entity;
 
 architecture dataPath_arch of dataPath is
-  signal Res_RE, npc_fwd_br, npc_fw_br, pc_plus_4, i_FE, i_DE, Op1_DE, Op2_DE, Op1_EX, Op2_EX, extImm_DE, extImm_EX, Res_EX, Res_ME, WD_EX, WD_ME, Res_Mem_ME, Res_Mem_RE, Res_ALU_ME, Res_ALU_RE, Res_fwd_ME, Res_fwd_ER : std_logic_vector(31 downto 0);
+  signal Res_RE, npc_fwd_br, pc_plus_4, i_FE, i_DE, Op1_DE, Op2_DE, Op1_EX, Op2_EX, extImm_DE, extImm_EX, Res_EX, Res_ME, WD_EX, WD_ME, Res_Mem_ME, Res_Mem_RE, Res_ALU_ME, Res_ALU_RE, Res_fwd_ME : std_logic_vector(31 downto 0);
   signal Op3_DE, Op3_EX, a1_DE, a1_EX, a2_DE, a2_EX, Op3_EX_out, Op3_ME, Op3_ME_out, Op3_RE, Op3_RE_out : std_logic_vector(3 downto 0);
 begin
 
-  npc_fwd_br <= npc_fw_br;
   -- FE
   FE : entity work.etageFE
         port map(Res_RE, npc_fwd_br, PCSrc_ER, Bpris_EX, GEL_LI, clk, pc_plus_4, i_FE);
 
   --Registre entre FE et DE
-  Reg1 : entity work.Reg32sync
+  RegFE_DE : entity work.Reg32sync
         port map(i_FE, i_DE, Gel_DI, RAZ_DI, clk);
 
   instr_DE <= i_DE;
@@ -36,8 +36,10 @@ begin
 
   -- DE
   DE : entity work.etageDE
-        port map(i_DE, Res_RE, pc_plus_4, Op3_RE_out, RegSrc, immSrc, RegWR, clk, a1_DE, a2_DE, Op3_DE, Op1_DE, Op2_DE);
-
+        port map(i_DE, Res_RE, pc_plus_4, Op3_RE_out, RegSrc, immSrc, RegWR, clk, a1_DE, a2_DE, Op3_DE, Op1_DE, Op2_DE, extImm_DE);
+  
+  Reg1 <= a1_DE;
+  Reg2 <= a2_DE;
   --Registre entre pour Op1
   RegOP1 : entity work.Reg32sync
         port map(Op1_DE, Op1_EX, '1', Clr_EX, clk);  
@@ -63,12 +65,9 @@ begin
   RegOp3 : entity work.Reg4
         port map(Op3_DE, OP3_EX, '1', Clr_EX, clk);
 
-
-  Res_fwd_ER <= Res_RE;
-  
   -- EX
   EX : entity work.etageEX
-        port map(Op1_EX, Op2_EX, ExtImm_EX, Res_fwd_ME, Res_fwd_ER, Op3_EX, EA_EX, EB_EX, ALUCtrl_EX, ALUSrc_EX, CC, Op3_EX_out, Res_EX, WD_EX, npc_fw_br);
+        port map(Op1_EX, Op2_EX, ExtImm_EX, Res_fwd_ME, Res_RE, Op3_EX, EA_EX, EB_EX, ALUCtrl_EX, ALUSrc_EX, CC, Op3_EX_out, Res_EX, WD_EX, npc_fwd_br);
 
   --Registre pour Res_EX
   RegresEx : entity work.Reg32sync
@@ -84,7 +83,7 @@ begin
 
   -- ME
   ME : entity work.etageME
-        port map(Res_ME, WD_ME, OP3_ME, clk, MemWR_Mem, Res_Mem_ME, Res_ALU_ME, Res_fwd_ME, Op3_ME_out );
+        port map(Res_ME, WD_ME, OP3_ME, clk, MemWR_Mem, Res_Mem_ME, Res_ALU_ME, Res_fwd_ME, Op3_ME_out);
 
   --Registre pour Res_Mem_ME
   RegResMemME : entity work.Reg32sync
@@ -94,10 +93,17 @@ begin
   RegResALUME : entity work.Reg32sync
         port map(Res_ALU_ME, Res_ALU_RE, '1', '1', clk);
 
+  --Registre pour Res_ALU_ME
+  RegResOp3RE : entity work.Reg4
+        port map(Op3_ME_out, Op3_RE, '1', '1', clk);
+
   -- RE
   RE : entity work.etageRE
     port map(Res_Mem_RE, Res_ALU_RE, Op3_RE, MemToReg_RE,  Res_RE, Op3_RE_out);
- 
+
+Op3_EX_Alea <= Op3_EX_out;    
+Op3_ME_Alea <= Op3_ME_out;
+Op3_RE_Alea <= Op3_RE_out;
 end architecture;
 
 --------------------------------------------------
@@ -174,10 +180,10 @@ entity UniteCond is
 end entity;
  
 architecture UniteCond_arch of UniteCond is
-      signal oui : std_logic;
+      signal tmpCondEX : std_logic;
 begin
       -- CC = N Z C V
-      oui <= '1' when (Cond = "0000" and CC(2) = '1') or
+      tmpCondEX <= '1' when (Cond = "0000" and CC(2) = '1') or
                          (Cond = "0001" and CC(2) = '0') or
                          (Cond = "0010" and CC(1) = '1') or
                          (Cond = "0011" and CC(2) = '0') or
@@ -187,13 +193,14 @@ begin
                          (Cond = "0111" and CC(0) = '0') or
                          (Cond = "1000" and CC(1) = '1' and CC(2) = '0') or
                          (Cond = "1001" and (CC(1) = '0' and CC(2) = '1')) or
-                         (Cond = "1010" and CC(3) = CC(0)) else
+                         (Cond = "1010" and CC(3) = CC(0)) or
+                         (Cond = "1110") else
                 '0';
 
-      CCp <= CC when CCWr_EX = '1' and oui = '1' else
+      CCp <= CC when CCWr_EX = '1' and tmpCondEX = '1' else
       CC_EX;
 
-      CondEx <= oui;
+      CondEx <= tmpCondEX;
 end architecture;
 
 ---------------------------------------------------------------------------------------------
@@ -242,32 +249,38 @@ end architecture;
  entity cpuEntier is
       port(
         clk : in std_logic
-      --   instruPlot : out std_logic_vector(31 downto 0);
-      --   CCPlot : out std_logic_vector (3 downto 0)
     );
 end entity;
 
 architecture cpuEntier_arch of cpuEntier is
-      signal ALUSrc_EX, CCWr_EX, MemWr_Mem, MemWr_RE, PCSrc_ER, Bpris_EX, Gel_LI, Gel_DI, RAZ_DI, RegWR, Clr_EX, MemToReg_RE :  std_logic;
+      signal AluSrc, CCWr_EX, MemWr, MemWr_Mem, MemWr_RE, PCSrc, PCSrc_ER, CondEx, Bpris_EX, Branch, Gel_LI, Gel_DI, RAZ_DI, RegWR, RegWr_RE, Clr_EX, MemToReg_RE :  std_logic;
       signal RegSrc, EA_EX, EB_EX, immSrc, ALUCtrl_EX : std_logic_vector(1 downto 0);
       signal Res_RE, npc_fwd_br, npc_fw_br, pc_plus_4, i_FE, i_DE, Op1_DE, Op2_DE, Op1_EX, instr_DE, Op2_EX, extImm_DE, extImm_EX, Res_EX, Res_ME, WD_EX, WD_ME, Res_Mem_ME, Res_Mem_RE, Res_ALU_ME, Res_ALU_RE, Res_fwd_ME, Res_fwd_ER : std_logic_vector(31 downto 0);
-      signal Op3_DE, Op3_EX, a1_DE, a1_EX, a2_DE, a2_EX, Cond, Op3_EX_out, a1, a2, CC, CCp, CC_EX, Op3_ME, Op3_ME_out, Op3_RE, Op3_RE_out : std_logic_vector(3 downto 0);
+      signal Op3_DE, Op3_EX, Reg1, a1_EX, Reg2, a2_EX, Cond, Op3_EX_out, a1, a2, CC, CCp, CC_EX, Op3_ME, Op3_ME_out, Op3_RE, Op3_RE_out : std_logic_vector(3 downto 0);
 begin
+
 Data : entity work.dataPath
-      port map(clk, ALUSrc_EX, MemWr_Mem, MemWr_RE, PCSrc_ER, Bpris_EX, Gel_LI, Gel_DI, RAZ_DI, RegWR, Clr_EX, MemToReg_RE, RegSrc, EA_EX, EB_EX, immSrc, ALUCtrl_EX, instr_DE, a1, a2, CC);
+      port map(clk, AluSrc, MemWr_Mem, PCSrc_ER, Bpris_EX, Gel_LI, Gel_DI, RAZ_DI, RegWr_RE, Clr_EX, MemToReg_RE, RegSrc, EA_EX, EB_EX, immSrc, ALUCtrl_EX, instr_DE, a1, a2, CC, Op3_RE_out, Op3_ME_out, Op3_EX_out, Reg1,Reg2);
 
 Control : entity work.UniteCtrl
-      port map(instr_DE, PCSrc_ER, RegWr, MemToReg_RE, MemWr_Mem, Bpris_EX, CCWr_EX, AluSrc_EX, AluCtrl_EX, ImmSrc, RegSrc, Cond);
+      port map(instr_DE, PCSrc, RegWr, MemToReg_RE, MemWr, Branch, CCWr_EX, AluSrc, AluCtrl_EX, ImmSrc, RegSrc, Cond);
 
+Reginstr_DE : entity work.Reg4
+      port map(instr_DE(31 downto 28), Cond, '1', Clr_EX, clk);
 
 Condi : entity work.UniteCond
-      port map(Cond, CC_EX, CC, CCWr_EX, Bpris_EX, CCp);
+      port map(Cond, CC_EX, CC, CCWr_EX, CondEx, CCp);
 
 RegCCP : entity work.Reg4
-      port map(CCp, CC_EX, '1', '1', clk);      
+      port map(CCp, CC_EX, '1', Clr_EX, clk);      
+
+      PCSrc_ER <= CondEx and PCSrc;
+      Bpris_EX <= CondEx and Branch;
+      MemWr_Mem <= CondEx and MemWr;
+      RegWr_RE <= CondEx and RegWr;
 
 Alea : entity work.UniteAlea
-      port map(a1, a2, a1_DE, a2_DE, Op3_ME_out, Op3_RE_out, Op3_EX_out, EA_EX, EB_EX, Gel_LI, Gel_DI, Clr_EX, RAZ_DI, MemToReg_RE, MemWR_Mem, Bpris_EX, RegWR, AluSrc_EX, PCSrc_ER);
+      port map(a1, a2, Reg1, Reg2, Op3_ME_out, Op3_RE_out, Op3_EX_out, EA_EX, EB_EX, Gel_LI, Gel_DI, Clr_EX, RAZ_DI, MemToReg_RE, MemWR_Mem, Bpris_EX, PCSrc, AluSrc, PCSrc_ER);
 
 end architecture;
 
