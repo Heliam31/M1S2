@@ -45,12 +45,7 @@ def query (ipS, portS, ip,port, id):
     
 class Noeud:
     def __init__(self):
-        self.IpSuivant = 0
-        self.PortSuivant = 0
-        self.IdSuivant = 0
-        self.IpPrecedent = 0
-        self.PortPrecedent = 0
-        self.IdPrecedent = 0
+        self.TableVois = {}
         self.port = 0
         self.ip = 0
         self.key = 0
