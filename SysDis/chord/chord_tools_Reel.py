@@ -131,7 +131,6 @@ class Noeud:
                             'id' : id
                         }
             json_send(self.IpSuivant,self.PortSuivant,sendaj)
-        self.nb_query += 1
         #utilisé par nodes dans le chord pour chercher id parmis les nodes
         
     #--------------------Pour le join----------------------------------
@@ -213,7 +212,6 @@ class Noeud:
             self.PortPrecedent = port
             self.IdPrecedent = id
             print("[CHECK] : Table de voisinnage mise à jour")
-            self.nb_management += 1
         else:
             print("[CHECK] : L'id ", id," ne fais pas partie de mes valeurs")
             sendaj = {    'request' : 'CHECK',
@@ -223,13 +221,11 @@ class Noeud:
                 }
             json_send(self.IpSuivant,self.PortSuivant,sendaj)
             print("[CHECK] : Envoi à mon prochain")
-            self.nb_management += 1
             return 0
 
     def nav(ip,port):
         data = {'request' : 'NAV'}
         json_send(ip,port, data)
-        self.nb_management += 1
         #-> “NonAvailable”, sent to the external node asking to join
 
     def ok(self, ip_pred, port_pred, id_pred, ip_succ, port_succ, id_succ, ip, port, id, data):
@@ -244,7 +240,6 @@ class Noeud:
                     'id' : id,
                     'data' : data
                 }
-        self.nb_management += 1
         json_send(ip,port,sendaj)
 
 
@@ -264,7 +259,6 @@ class Noeud:
         else:
             json_send(self.IpPrecedent, self.PortPrecedent, sendaj)
             print("[UPDATE] : table de voisinnage inchangée")
-        self.nb_management += 1
         #-> sent to the previous node : if that node is impacted, update its TV and send to the previous node again (else: stop)
 
     #--------------------Modif de valeur----------------------------------
@@ -280,7 +274,7 @@ class Noeud:
                             'value' : value
                         }
             json_send(self.IpSuivant,self.PortSuivant,sendaj)
-        self.nb_set += 1
+        moi.nb_set += 1
         
 
     #-----------------------Pour le quit----------------------------------
@@ -298,3 +292,20 @@ class Noeud:
         #nb_management : add to the variable how many of ‘everything else’ the node has used, then send to the next node
         #ip, port 	: of the external node
         return 0
+
+    def whois(self, ip, port, id_wanted):
+        data = {
+                "request" : "WHOIS",
+                "ip" : ip,
+                "port" : port,
+                "id_wanted" : id_wanted
+                }
+
+    def iam(self, ip, port, id, id_wanted):
+        data = {
+                "request" : "IAM",
+                "ip" : ip,
+                "port" : port,
+                "id" : id,
+                "id_wanted" : id_wanted
+                }
