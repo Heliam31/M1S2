@@ -1,11 +1,8 @@
-start
+V1:
+python chord_v1.py 
+dans un terminal
+python chord2_v1.py 
+dans un autre
 
-``` bash
-python3 chord_v0.py
-```
-in a terminal and
-
-``` bash
-python3 chord_client.py
-```
-in another.
+V2:
+lancer chaque code et chordjoin_v2.py à la fin

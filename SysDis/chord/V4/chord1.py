@@ -1,7 +1,7 @@
 #! /usr/bin/python3
 #cd Desktop/M1S2/SysDis/chord/V3
 import socket
-from chord_tools import *
+from chord_tools_Reel import *
 
 
 IpClient = 'pc-u3-305-9'
@@ -11,9 +11,6 @@ moi = Noeud()
 moi.IpPrecedent = "localhost"
 moi.PortPrecedent = 9001
 moi.IdPrecedent = 500
-moi.IpSuivant = "localhost"
-moi.PortSuivant = 9001
-moi.IdSuivant = 500
 moi.port = 8000
 moi.key = 50
 myIp = socket.gethostname()
@@ -34,8 +31,6 @@ print("oui: ",moi.TableVois[moi.key+((65536/2)% 65536)])
 moi.liRand = [moi.key, 500]
 
 print(myIp)
-
-moi.create()
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as serversocket:
     serversocket.bind(('', moi.port))

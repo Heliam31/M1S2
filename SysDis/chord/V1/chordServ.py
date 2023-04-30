@@ -1,46 +1,32 @@
 #! /usr/bin/python3
-#cd Desktop/M1S2/SysDis/chord/V3
+#cd CurrentWork/M1S2/SysDis/chord
 import socket
 from chord_tools import *
-
 
 IpClient = 'pc-u3-305-9'
 
 
 moi = Noeud()
-moi.IpPrecedent = "localhost"
-moi.PortPrecedent = 9001
-moi.IdPrecedent = 500
-moi.IpSuivant = "localhost"
-moi.PortSuivant = 9001
-moi.IdSuivant = 500
-moi.port = 8000
+
+moi.port = 8001
 moi.key = 50
 myIp = socket.gethostname()
 moi.ip = myIp
 
-i=1
-cpt=1
-while i <= (65536/2)% 65536:
-    if (moi.is_child((moi.key + i)% 65536)):
-        moi.TableVois[(moi.key+i)% 65536] = ["localhost" , 8000, 50]
-    else:
-        moi.TableVois[(moi.key+i)% 65536] = ["localhost" , 9001, 500]
-    i=2**cpt
-    cpt+=1
+moi.IpSuivant = "localhost"         #"pc-u3-305-09"
+moi.PortSuivant = 8001
+moi.IdSuivant = 50
 
-print("oui: ",moi.TableVois[moi.key+((65536/2)% 65536)])
+moi.IpPrecedent = "localhost"       #"pc-u3-305-09"
+moi.PortPrecedent = 8001
+moi.IdPrecedent = 50
 
-moi.liRand = [moi.key, 500]
+moi.liRand = [moi.key, moi. IdSuivant]
 
 print(myIp)
 
-moi.create()
-
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as serversocket:
     serversocket.bind(('', moi.port))
-    moi.set(45,25)
-    moi.print()
     serversocket.settimeout(5)
     serversocket.listen(5)
     print('listening on port:', serversocket.getsockname()[1])

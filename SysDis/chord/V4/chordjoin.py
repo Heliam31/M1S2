@@ -1,45 +1,19 @@
 #! /usr/bin/python3
 #cd Desktop/M1S2/SysDis/chord/V3
+
 import socket
-from chord_tools import *
-
-
-IpClient = 'pc-u3-305-9'
-
+from chord_tools_Reel import *
 
 moi = Noeud()
-moi.IpPrecedent = "localhost"
-moi.PortPrecedent = 9001
-moi.IdPrecedent = 500
-moi.IpSuivant = "localhost"
-moi.PortSuivant = 9001
-moi.IdSuivant = 500
-moi.port = 8000
-moi.key = 50
-myIp = socket.gethostname()
-moi.ip = myIp
 
-i=1
-cpt=1
-while i <= (65536/2)% 65536:
-    if (moi.is_child((moi.key + i)% 65536)):
-        moi.TableVois[(moi.key+i)% 65536] = ["localhost" , 8000, 50]
-    else:
-        moi.TableVois[(moi.key+i)% 65536] = ["localhost" , 9001, 500]
-    i=2**cpt
-    cpt+=1
+moi.port = 8002
+moi.ip = socket.gethostname()
 
-print("oui: ",moi.TableVois[moi.key+((65536/2)% 65536)])
-
-moi.liRand = [moi.key, 500]
-
-print(myIp)
-
-moi.create()
+moi.join("localhost", 9001, moi.ip, moi.port)
+moi.print()
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as serversocket:
     serversocket.bind(('', moi.port))
-    moi.set(45,25)
     moi.print()
     serversocket.settimeout(5)
     serversocket.listen(5)

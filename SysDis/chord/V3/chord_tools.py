@@ -45,6 +45,12 @@ def query (ipS, portS, ip,port, id):
     
 class Noeud:
     def __init__(self):
+        self.IpSuivant = 0
+        self.PortSuivant = 0
+        self.IdSuivant = 0
+        self.IpPrecedent = 0
+        self.PortPrecedent = 0
+        self.IdPrecedent = 0
         self.TableVois = {}
         self.port = 0
         self.ip = 0
@@ -87,6 +93,7 @@ class Noeud:
         print("[PRINT]: Ip Precédent: ",self.IpPrecedent)
         print("[PRINT]: Port Precédent: ",self.PortPrecedent)
         print("[PRINT]: Id Precédent: ",self.IdPrecedent)
+        print("[PRINT]: Table de voisinnage: ",self.TableVois)
         print("[PRINT]: mon Port: ",self.port)
         print("[PRINT]: mon Ip: ",self.ip )
         print("[PRINT]: ma clé: ",self.key )
@@ -126,6 +133,7 @@ class Noeud:
                             'id' : id
                         }
             json_send(self.IpSuivant,self.PortSuivant,sendaj)
+        self.nb_query += 1
         #utilisé par nodes dans le chord pour chercher id parmis les nodes
         
     #--------------------Pour le join----------------------------------
@@ -207,6 +215,7 @@ class Noeud:
             self.PortPrecedent = port
             self.IdPrecedent = id
             print("[CHECK] : Table de voisinnage mise à jour")
+            self.nb_management += 1
         else:
             print("[CHECK] : L'id ", id," ne fais pas partie de mes valeurs")
             sendaj = {    'request' : 'CHECK',
@@ -216,11 +225,64 @@ class Noeud:
                 }
             json_send(self.IpSuivant,self.PortSuivant,sendaj)
             print("[CHECK] : Envoi à mon prochain")
+            self.nb_management += 1
             return 0
+        
+    def create(self):
+        print("[CREATE] : Creation table de voisinnage")
+        i=1
+        cpt=1
+        while i <= (65536/2)% 65536:
+            change = 0
+            if self.is_child((self.key+i)% 65536):
+                self.TableVois[(self.key+i)% 65536] = [self.ip, self.port, self.key]
+            else:
+                if (self.IdSuivant > self.key):
+                    if(((self.key+i)% 65536 <= self.key) or (self.key+i)% 65536 > (self.IdSuivant)):
+                        self.TableVois[(self.key+i)% 65536] = [self.IpSuivant, self.PortSuivant, self.IdSuivant]
+                    else:
+                        change = 1
+                else:
+                    if((self.key+i)% 65536 <= self.key and (self.key+i)% 65536 > self.IdSuivant):
+                        self.TableVois[(self.key+i)% 65536] = [self.IpSuivant, self.PortSuivant, self.IdSuivant]
+                    else:
+                        change = 1   
+                if change == 1:    
+                    self.TableVois[(self.key+i)% 65536] = [0, 0, 0]
+                    data = {
+                        "request" : "WHOIS",
+                        "ip" : self.ip,
+                        "port" : self.port,
+                        "id_wanted" : ((self.key + i)% 65536)
+                        }
+                    json_send(self.IpPrecedent, self.PortPrecedent, data)
+                    sortie = 0
+                    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as serversocket:
+                            serversocket.bind(('', self.port))
+                            serversocket.settimeout(10)
+                            serversocket.listen(5)
+                            print('listening on port:', serversocket.getsockname()[1])
+                            while sortie == 0:
+                                (clientsocket, address) = serversocket.accept()
+                                print("[CREATE/WHOIS] : nouvelle connexion")
+                                json_data = json_recv(clientsocket)
+                                if (json_data['request'] == 'IAM'):
+                                    print("[CREATE/WHOIS] : Réponse à notre demande")
+                                    self.TableVois[json_data['id_wanted']] = [json_data['ip'],json_data['port'],json_data['id']]
+                                    sortie = 1
+                i=2**cpt
+                cpt+=1
+        sendaj = {    'request' : 'UPDATE',
+                    'new_ip' : self.ip,
+                    'new_port' : self.port,
+                    'new_id' : self.key
+                }
+        json_send(self.IpPrecedent, self.PortPrecedent, sendaj)
 
-    def nav(ip,port):
+    def nav(self,ip,port):
         data = {'request' : 'NAV'}
         json_send(ip,port, data)
+        self.nb_management += 1
         #-> “NonAvailable”, sent to the external node asking to join
 
     def ok(self, ip_pred, port_pred, id_pred, ip_succ, port_succ, id_succ, ip, port, id, data):
@@ -235,10 +297,11 @@ class Noeud:
                     'id' : id,
                     'data' : data
                 }
+        self.nb_management += 1
         json_send(ip,port,sendaj)
 
 
-    def update(self,ip_new, port_new, id_new):
+    def update(self,serversocket, ip_new, port_new, id_new):
         print("[UPDATE] : Mise à jour table de voisinnage")
         sendaj = {    'request' : 'UPDATE',
                     'new_ip' : ip_new,
@@ -254,6 +317,7 @@ class Noeud:
         else:
             json_send(self.IpPrecedent, self.PortPrecedent, sendaj)
             print("[UPDATE] : table de voisinnage inchangée")
+        self.nb_management += 1
         #-> sent to the previous node : if that node is impacted, update its TV and send to the previous node again (else: stop)
 
     #--------------------Modif de valeur----------------------------------
@@ -269,7 +333,7 @@ class Noeud:
                             'value' : value
                         }
             json_send(self.IpSuivant,self.PortSuivant,sendaj)
-        moi.nb_set += 1
+        self.nb_set += 1
         
 
     #-----------------------Pour le quit----------------------------------
@@ -288,19 +352,111 @@ class Noeud:
         #ip, port 	: of the external node
         return 0
 
+#----------------------------------------WHOIS IAM-------------------------------------------------------------------------
+
     def whois(self, ip, port, id_wanted):
+        print("[WHOIS]recherche du parent de l'id: ", id_wanted)
         data = {
                 "request" : "WHOIS",
                 "ip" : ip,
                 "port" : port,
                 "id_wanted" : id_wanted
                 }
+        
+        if (self.is_child(id_wanted)):
+            print("[WHOIS] c'est moi")
+            self.iam(ip,port, id_wanted)
+        else:
+            print("[WHOIS] pas moi")
+            i=1
+            cpt=1
+            trouve=0
+            while i <= (65536/2)% 65536 and trouve==0:
+                if (i == (65536/2)% 65536 ):
+                    print("[WHOIS] envoi au suivant")
+                    json_send(self.TableVois[(self.key+i)% 65536][0], self.TableVois[(self.key+i)% 65536][1], data)
+                    trouve = 1
+                else:
+                    if ((self.key+i)% 65536) == id_wanted : #i = id_wanted
+                        print("[WHOIS] envoi à celui qui a la bonne valeur")
+                        json_send(self.TableVois[(self.key+i)% 65536][0], self.TableVois[(self.key+i)% 65536][1], data)
+                        trouve = 1
+                    if ((self.key+i)% 65536) > self.key and self.key < (self.key+(2**cpt))% 65536: #cas ou i et le suivant sont sous 0
+                        if ((self.key+i)% 65536) < id_wanted and ((self.key+(2**cpt))% 65536) > id_wanted: #l'id wanted est entre eux
+                            if self.TableVois[((self.key+i)% 65536)][2] == self.TableVois[((self.key+(2**cpt))% 65536)][2]:
+                                print("[WHOIS] envoi au bon")
+                                envoiiam = {
+                                        "request" : "IAM",
+                                        "ip" : self.TableVois[(self.key+(2**cpt))% 65536][0],
+                                        "port" : self.TableVois[(self.key+(2**cpt))% 65536][1],
+                                        "id" : self.TableVois[(self.key+(2**cpt))% 65536][2],
+                                        "id_wanted" : id_wanted
+                                        }
+                                json_send(ip , port , envoiiam)
+                                trouve = 1
+                            else:
+                                print("[WHOIS] envoi au bon ou très proche")
+                                json_send(self.TableVois[(self.key+i)% 65536][0], self.TableVois[(self.key+i)% 65536][1], data)
+                                trouve = 1
+                    if ((self.key+i)% 65536) < self.key and self.key > (self.key+(2**cpt))% 65536:  # cas ou i et le suivant son apres 0      
+                        if ((self.key+i)% 65536) < id_wanted and ((self.key+(2**cpt))% 65536) > id_wanted:
+                            if self.TableVois[((self.key+i)% 65536)][2] == self.TableVois[((self.key+(2**cpt))% 65536)][2]:
+                                print("[WHOIS] envoi au bon")
+                                envoiiam = {
+                                        "request" : "IAM",
+                                        "ip" : self.TableVois[(self.key+(2**cpt))% 65536][0],
+                                        "port" : self.TableVois[(self.key+(2**cpt))% 65536][1],
+                                        "id" : self.TableVois[(self.key+(2**cpt))% 65536][2],
+                                        "id_wanted" : id_wanted
+                                        }
+                                json_send(ip , port , envoiiam)
+                                trouve = 1
+                            else:
+                                print("[WHOIS] envoi au bon ou très proche")
+                                json_send(self.TableVois[(self.key+i)% 65536][0], self.TableVois[(self.key+i)% 65536][1], data)
+                                trouve = 1
+                    if ((self.key+i)% 65536) > self.key and self.key > (self.key+(2**cpt))% 65536: #cas ou i < 0 et suivant apres 0
+                        if id_wanted > ((self.key+i)% 65536)  and id_wanted > ((self.key+(2**cpt))% 65536) : #id wanted présent, cote ppq 0
+                            if self.TableVois[((self.key+i)% 65536)][2] == self.TableVois[((self.key+(2**cpt))% 65536)][2]:
+                                print("[WHOIS] envoi au bon")
+                                envoiiam = {
+                                        "request" : "IAM",
+                                        "ip" : self.TableVois[(self.key+(2**cpt))% 65536][0],
+                                        "port" : self.TableVois[(self.key+(2**cpt))% 65536][1],
+                                        "id" : self.TableVois[(self.key+(2**cpt))% 65536][2],
+                                        "id_wanted" : id_wanted
+                                        }
+                                json_send(ip , port , envoiiam)
+                                trouve = 1
+                            else:
+                                print("[WHOIS] envoi au bon ou très proche")
+                                json_send(self.TableVois[(self.key+i)% 65536][0], self.TableVois[(self.key+i)% 65536][1], data)
+                                trouve = 1
+                        if id_wanted < ((self.key+i)% 65536)  and id_wanted < ((self.key+(2**cpt))% 65536) : #id wanted présent, cote pgq 0
+                            if self.TableVois[((self.key+i)% 65536)][2] == self.TableVois[((self.key+(2**cpt))% 65536)][2]:
+                                print("[WHOIS] envoi au bon")
+                                envoiiam = {
+                                        "request" : "IAM",
+                                        "ip" : self.TableVois[(self.key+(2**cpt))% 65536][0],
+                                        "port" : self.TableVois[(self.key+(2**cpt))% 65536][1],
+                                        "id" : self.TableVois[(self.key+(2**cpt))% 65536][2],
+                                        "id_wanted" : id_wanted
+                                        }
+                                json_send(ip , port , envoiiam)
+                                trouve = 1
+                            else:
+                                print("[WHOIS] envoi au bon ou très proche")
+                                json_send(self.TableVois[(self.key+i)% 65536][0], self.TableVois[(self.key+i)% 65536][1], data)
+                                trouve = 1
+                i=2**cpt
+                cpt += 1
 
-    def iam(self, ip, port, id, id_wanted):
+    def iam(self, ip, port, id_wanted):
         data = {
                 "request" : "IAM",
-                "ip" : ip,
-                "port" : port,
-                "id" : id,
+                "ip" : self.ip,
+                "port" : self.port,
+                "id" : self.key,
                 "id_wanted" : id_wanted
                 }
+        json_send(ip,port,data)
