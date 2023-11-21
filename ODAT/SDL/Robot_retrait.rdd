@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE Diagram SYSTEM "rtdsDiagram.dtd">
+
+<SdlFSMDiagram language="sdl" type="prcs" is_extract="FALSE" is_temporary="FALSE">
+<SdlFSMPartition name="" needs_cleanup="FALSE">
+<StateTransitionBlock top_left_coordinates="94 88">
+<SdlFSMSymbol identifier="SYM1" type="sdlState" text="Idle" outline_color="-" background_color="-" center_coordinates="135 108" dimensions="60 40" attached_symbol_id=""/>
+<NormalStateTransition>
+<SdlFSMSymbol identifier="SYM2" type="sdlInputSig" text="takePiece" outline_color="-" background_color="-" center_coordinates="135 160" dimensions="82 40" attached_symbol_id=""/>
+<Transition>
+<SdlFSMSymbol identifier="SYM3" type="sdlTask" text="TakePiece" outline_color="-" background_color="-" center_coordinates="135 212" dimensions="82 40" attached_symbol_id=""/>
+<SdlFSMSymbol identifier="SYM19" type="sdlSendSig" text="FreeConv" outline_color="-" background_color="-" center_coordinates="135 264" dimensions="76 40" attached_symbol_id=""/>
+<SdlFSMSymbol identifier="SYM20" type="sdlState" text="Idle" outline_color="-" background_color="-" center_coordinates="135 316" dimensions="60 40" attached_symbol_id=""/>
+</Transition>
+</NormalStateTransition>
+</StateTransitionBlock>
+<PageSpecification pageWidth="21.0" pageHeight="29.7" topMargin="1.0" bottomMargin="1.0" leftMargin="1.0" rightMargin="1.0" pageFooter="TRUE" scaleFactor="1.0"/>
+</SdlFSMPartition>
+</SdlFSMDiagram>

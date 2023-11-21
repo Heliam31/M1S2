@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE Diagram SYSTEM "rtdsDiagram.dtd">
+
+<SdlFSMDiagram language="sdl" type="prcs" is_extract="FALSE" is_temporary="FALSE">
+<SdlFSMPartition name="" needs_cleanup="FALSE">
+<SdlFSMSymbol identifier="SYM25" type="sdlText" text="DCL
+machineOccup intTable;" outline_color="-" background_color="-" center_coordinates="536 175" dimensions="174 50" attached_symbol_id=""/>
+<StateTransitionBlock top_left_coordinates="718 176">
+<SdlFSMSymbol identifier="SYM1" type="sdlState" text="Idle" outline_color="-" background_color="-" center_coordinates="770 196" dimensions="60 40" attached_symbol_id=""/>
+<NormalStateTransition>
+<SdlFSMSymbol identifier="SYM2" type="sdlInputSig" text="PieceAvail" outline_color="-" background_color="-" center_coordinates="770 248" dimensions="90 40" attached_symbol_id=""/>
+<Transition>
+<SdlFSMSymbol identifier="SYM3" type="sdlSendSig" text="sendToConv" outline_color="-" background_color="-" center_coordinates="770 300" dimensions="90 40" attached_symbol_id=""/>
+<SdlFSMSymbol identifier="SYM4" type="sdlSendSig" text="wake" outline_color="-" background_color="-" center_coordinates="770 352" dimensions="60 40" attached_symbol_id=""/>
+<SdlFSMSymbol identifier="SYM5" type="sdlState" text="Listen" outline_color="-" background_color="-" center_coordinates="770 404" dimensions="62 40" attached_symbol_id=""/>
+</Transition>
+</NormalStateTransition>
+</StateTransitionBlock>
+<StateTransitionBlock top_left_coordinates="188 202">
+<SdlFSMSymbol identifier="SYM20" type="sdlState" text="Idle" outline_color="-" background_color="-" center_coordinates="233 222" dimensions="60 40" attached_symbol_id=""/>
+<NormalStateTransition>
+<SdlFSMSymbol identifier="SYM21" type="sdlInputSig" text="pieceAvail" outline_color="-" background_color="-" center_coordinates="233 274" dimensions="90 40" attached_symbol_id=""/>
+<Transition>
+</Transition>
+</NormalStateTransition>
+</StateTransitionBlock>
+<NonStateTransition top_left_coordinates="1 203">
+<SdlFSMSymbol identifier="SYM26" type="sdlStart" outline_color="-" background_color="-" center_coordinates="77 218" dimensions="60 30" attached_symbol_id=""/>
+<Transition>
+<SdlFSMSymbol identifier="SYM27" type="sdlTask" text="machineOccup:=(.0.)" outline_color="-" background_color="-" center_coordinates="77 265" dimensions="152 40" attached_symbol_id=""/>
+<SdlFSMSymbol identifier="SYM28" type="sdlState" text="Idle" outline_color="-" background_color="-" center_coordinates="77 317" dimensions="60 40" attached_symbol_id=""/>
+</Transition>
+</NonStateTransition>
+<StateTransitionBlock top_left_coordinates="315 786">
+<SdlFSMSymbolReference identifier="SYM13"/>
+<NormalStateTransition>
+<SdlFSMSymbol identifier="SYM14" type="sdlInputSig" text="FreeConv" outline_color="-" background_color="-" center_coordinates="770 872" dimensions="76 40" attached_symbol_id=""/>
+<Transition>
+<SdlFSMSymbol identifier="SYM16" type="sdlSendSig" text="PieceDone" outline_color="-" background_color="-" center_coordinates="770 924" dimensions="82 40" attached_symbol_id=""/>
+<SdlFSMSymbol identifier="SYM15" type="sdlState" text="Idle" outline_color="-" background_color="-" center_coordinates="770 976" dimensions="60 40" attached_symbol_id=""/>
+</Transition>
+</NormalStateTransition>
+</StateTransitionBlock>
+<StateTransitionBlock top_left_coordinates="315 630">
+<SdlFSMSymbolReference identifier="SYM10"/>
+<NormalStateTransition>
+<SdlFSMSymbol identifier="SYM11" type="sdlInputSig" text="LoadedConv" outline_color="-" background_color="-" center_coordinates="770 716" dimensions="90 40" attached_symbol_id=""/>
+<Transition>
+<SdlFSMSymbol identifier="SYM12" type="sdlSendSig" text="takePiece" outline_color="-" background_color="-" center_coordinates="770 768" dimensions="82 40" attached_symbol_id=""/>
+<SdlFSMSymbol identifier="SYM13" type="sdlState" text="Listen4" outline_color="-" background_color="-" center_coordinates="770 820" dimensions="68 40" attached_symbol_id=""/>
+</Transition>
+</NormalStateTransition>
+</StateTransitionBlock>
+<StateTransitionBlock top_left_coordinates="294 474">
+<SdlFSMSymbolReference identifier="SYM7"/>
+<NormalStateTransition>
+<SdlFSMSymbol identifier="SYM8" type="sdlInputSig" text="Free" outline_color="-" background_color="-" center_coordinates="770 560" dimensions="60 40" attached_symbol_id=""/>
+<Transition>
+<SdlFSMSymbol identifier="SYM9" type="sdlSendSig" text="sendPiece" outline_color="-" background_color="-" center_coordinates="770 612" dimensions="82 40" attached_symbol_id=""/>
+<SdlFSMSymbol identifier="SYM10" type="sdlState" text="Listen3" outline_color="-" background_color="-" center_coordinates="770 664" dimensions="68 40" attached_symbol_id=""/>
+</Transition>
+</NormalStateTransition>
+</StateTransitionBlock>
+<StateTransitionBlock top_left_coordinates="464 474">
+<SdlFSMSymbolReference identifier="SYM18"/>
+<NormalStateTransition>
+<SdlFSMSymbol identifier="SYM19" type="sdlInputSig" text="freeConv" outline_color="-" background_color="-" center_coordinates="873 560" dimensions="76 40" attached_symbol_id=""/>
+<Transition>
+</Transition>
+</NormalStateTransition>
+</StateTransitionBlock>
+<StateTransitionBlock top_left_coordinates="315 370">
+<SdlFSMSymbolReference identifier="SYM5"/>
+<NormalStateTransition>
+<SdlFSMSymbol identifier="SYM6" type="sdlInputSig" text="workDone" outline_color="-" background_color="-" center_coordinates="770 456" dimensions="76 40" attached_symbol_id=""/>
+<Transition>
+<SdlFSMSymbol identifier="SYM7" type="sdlState" text="waitFreeConv" outline_color="-" background_color="-" center_coordinates="770 508" dimensions="104 40" attached_symbol_id=""/>
+</Transition>
+</NormalStateTransition>
+<NormalStateTransition>
+<SdlFSMSymbol identifier="SYM17" type="sdlInputSig" text="pieceOnConv" outline_color="-" background_color="-" center_coordinates="873 456" dimensions="96 40" attached_symbol_id=""/>
+<Transition>
+<SdlFSMSymbol identifier="SYM18" type="sdlState" text="listen2" outline_color="-" background_color="-" center_coordinates="873 508" dimensions="68 40" attached_symbol_id=""/>
+</Transition>
+</NormalStateTransition>
+</StateTransitionBlock>
+<PageSpecification pageWidth="21.0" pageHeight="29.7" topMargin="1.0" bottomMargin="1.0" leftMargin="1.0" rightMargin="1.0" pageFooter="TRUE" scaleFactor="1.0"/>
+</SdlFSMPartition>
+</SdlFSMDiagram>
